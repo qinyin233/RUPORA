@@ -6,7 +6,7 @@
 
 *Inspired by Typora · Powered by Rust*
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/qinyin233/RUPORA/releases)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/qinyin233/rupora/releases)
 [![Tauri](https://img.shields.io/badge/Tauri-v2-FFC131?logo=tauri&logoColor=white)](https://v2.tauri.app/)
 [![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![Rust](https://img.shields.io/badge/Rust-2021-000000?logo=rust&logoColor=white)](https://www.rust-lang.org/)
@@ -73,7 +73,7 @@
 
 ### 下载安装包
 
-前往 [Releases](https://github.com/qinyin233/RUPORA/releases) 页面下载最新版本：
+前往 [Releases](https://github.com/qinyin233/rupora/releases) 页面下载最新版本：
 
 - **Windows**: `RUPORA_x.x.x_x64-setup.exe`（NSIS 安装包）或 `RUPORA_x.x.x_x64_en-US.msi`
 
@@ -91,8 +91,8 @@
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/qinyin233/RUPORA.git
-cd RUPORA
+git clone https://github.com/qinyin233/rupora.git
+cd rupora
 
 # 2. 安装前端依赖
 npm install
