@@ -1,7 +1,7 @@
 {
   "name": "rupora",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "RUPORA - A modern, lightweight Markdown editor built with Tauri 2 + Vue 3 + Vditor",
   "author": "qinyin233",

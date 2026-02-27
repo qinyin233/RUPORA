@@ -1,6 +1,6 @@
 [package]
 name = "rupora"
-version = "1.0.0"
+version = "1.1.0"
 description = "RUPORA - A modern Markdown editor built with Tauri and Vue"
 authors = ["qinyin233"]
 edition = "2021"

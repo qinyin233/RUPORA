@@ -1,4 +1,5 @@
 use std::fs;
+use tauri::{DragDropEvent, Emitter, WindowEvent};
 
 // 读取文件内容 (增强版编码探测)
 #[tauri::command]
@@ -27,7 +28,6 @@ fn read_markdown_file(path: String) -> Result<String, String> {
     }
 
     // 4. 尝试 GB18030 (包含 GBK/GB2312)
-    // 这是最容易跟 UTF-8 混淆的地方，如果强制解码且没有错误，那就大概率是它
     let (cow, _, had_errors) = encoding_rs::GB18030.decode(&bytes);
     if !had_errors {
         return Ok(cow.into_owned());
@@ -36,7 +36,7 @@ fn read_markdown_file(path: String) -> Result<String, String> {
     // 5. 如果以上都不是，最后用 chardetng 猜一个可能性最大的
     let mut detector = chardetng::EncodingDetector::new();
     detector.feed(&bytes, true);
-    let encoding = detector.guess(None, true); // true = 允许回退到常见编码 (如 Windows-1252)
+    let encoding = detector.guess(None, true);
 
     let (final_cow, _, _) = encoding.decode(&bytes);
     eprintln!("此文件编码识别困难，最终猜测为: {}", encoding.name());
@@ -48,6 +48,12 @@ fn read_markdown_file(path: String) -> Result<String, String> {
 #[tauri::command]
 fn save_markdown_file(path: String, content: String) -> Result<(), String> {
     fs::write(&path, content).map_err(|e| format!("无法保存文件: {}", e))
+}
+
+// 导出 HTML 文件
+#[tauri::command]
+fn export_html_file(path: String, html_content: String) -> Result<(), String> {
+    fs::write(&path, html_content).map_err(|e| format!("无法导出 HTML: {}", e))
 }
 
 #[derive(serde::Serialize, Clone)]
@@ -112,10 +118,30 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
+        .on_window_event(|window, event| {
+            if let WindowEvent::DragDrop(drop_event) = event {
+                match drop_event {
+                    DragDropEvent::Drop { paths, .. } => {
+                        let _ = window.emit("app-file-drop", paths);
+                    }
+                    DragDropEvent::Enter { paths, .. } => {
+                        let _ = window.emit("app-file-drop-hover", paths);
+                    }
+                    DragDropEvent::Over { .. } => {
+                        let _ = window.emit("app-file-drop-hover", Vec::<std::path::PathBuf>::new());
+                    }
+                    DragDropEvent::Leave => {
+                        let _ = window.emit("app-file-drop-cancelled", ());
+                    }
+                    _ => {}
+                }
+            }
+        })
         .invoke_handler(tauri::generate_handler![
             read_markdown_file,
             save_markdown_file,
-            list_markdown_files
+            list_markdown_files,
+            export_html_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
